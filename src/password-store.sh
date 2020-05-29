@@ -189,6 +189,9 @@ clip() {
 		# Clipboard managers frequently write their history out in plaintext,
 		# so we axe it here:
 		qdbus org.kde.klipper /klipper org.kde.klipper.klipper.clearClipboardHistory &>/dev/null
+		#
+		# Clippy's `clipdel` deletes history by regex, so we escape specials first:
+		clipdel -d "$(echo -n "$1" | sed -e 's|[]/$*.^[]|\\&|g')"
 
 		echo "$before" | $BASE64 -d | "${copy_cmd[@]}"
 	) >/dev/null 2>&1 & disown
